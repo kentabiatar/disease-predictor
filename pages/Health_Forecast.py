@@ -2,18 +2,20 @@ import streamlit as st
 import requests
 from dotenv import load_dotenv
 import os
+import pandas as pd
+import joblib
+from streamlit_echarts import st_echarts
 
-load_dotenv()
-API_KEY = os.getenv("API_KEY")
+# load_dotenv()
+# API_KEY = os.getenv("API_KEY")
+
+API_KEY = "f04ab63da2ab48889bb42204252604"
 
 indonesia_cities = [
     "Jakarta", "Surabaya", "Bandung", "Medan", "Semarang", "Palembang", "Makassar",
     "Batam", "Pekanbaru", "Yogyakarta", "Malang", "Denpasar", "Manado", "Padang",
     "Balikpapan", "Banjarmasin", "Samarinda", "Pontianak", "Kupang", "Jayapura"
 ]
-
-
-
 
 st.set_page_config(page_title="Disease Prediction", layout="wide")
 st.title("🩺 Disease Prediction Form")
@@ -79,6 +81,8 @@ symptom_labels = [
     "throbbing_headache", "confusion", "back_pain", "knee_ache"
 ]
 
+symptom_labels.sort()
+
 # Responsive columns for symptoms
 cols = st.columns(4)
 
@@ -98,5 +102,60 @@ if st.button("Submit"):
         **symptoms
     }
 
-    st.success("✅ Form submitted. Here’s the final input:")
-    st.json(user_input)
+    user_input_df = pd.DataFrame([user_input])
+    user_input_df.rename(columns={"gender" : "gender_Male"}, inplace=True)
+    
+    # Load the model
+    model = joblib.load("xgboost_model.pkl")
+    y_encoder = joblib.load("label_encoder.pkl")
+    feature_cols = joblib.load("feature_columns.pkl")
+    user_input_df = user_input_df.reindex(columns=feature_cols, fill_value=0)
+
+    st.success("✅ Form submitted. Here's the final input:")
+    probas = model.predict_proba(user_input_df)[0]
+    top5_idx = probas.argsort()[-5:][::-1]
+    top5_diseases = y_encoder.classes_[top5_idx]
+    top5_probs = probas[top5_idx]
+    
+    left, right = st.columns(2, vertical_alignment="center")
+    
+    with left:
+        options = {
+            "tooltip": {"trigger": "item"},
+            "legend": {"top": "5%", "left": "center"},
+            "series": [
+                {
+                    "name": "result",
+                    "type": "pie",
+                    "radius": ["40%", "70%"],
+                    "avoidLabelOverlap": False,
+                    "itemStyle": {
+                        "borderRadius": 10,
+                        "borderColor": "#fff",
+                        "borderWidth": 2,
+                    },
+                    "label": {"show": False, "position": "center"},
+                    "emphasis": {
+                        "label": {"show": True, "fontSize": "25", "fontWeight": "bold"}
+                    },
+                    "labelLine": {"show": False},
+                    "data": [
+                        {"value": float(top5_probs[0]*100), "name": top5_diseases[0]},
+                        {"value": float(top5_probs[1]*100), "name": top5_diseases[1]},
+                        {"value": float(top5_probs[2]*100), "name": top5_diseases[2]},
+                        {"value": float(top5_probs[3]*100), "name": top5_diseases[3]},
+                        {"value": float(top5_probs[4]*100), "name": top5_diseases[4]},
+                    ],
+                }
+            ],
+        }
+        
+        st_echarts(
+            options=options, height="500px",
+        )
+        
+    with right:
+        for i in range(5):
+            st.markdown(f"**Top {i+1} Prediction:** {top5_diseases[i]} — {top5_probs[i]*100:.2f}%")
+
+        # st.json(user_input)
