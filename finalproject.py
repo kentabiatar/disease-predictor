@@ -83,26 +83,13 @@ print("Unique Prognosis:", unique_prognosis)
 X_train, X_test, y_train, y_test = train_test_split(X_final, final_df["prognosis_encoded"], test_size=0.3, random_state=42, stratify=y)
 
 smote = SMOTE(random_state=42)
-#y_train_labels = np.argmax(y_train, axis=1)
-X_train_smote, y_train_smote = smote.fit_resample(X_train, y_train)
 
-#y_train_smote = pd.get_dummies(y_train_labels_smote).values
+X_train_smote, y_train_smote = smote.fit_resample(X_train, y_train)
 
 print("Before Oversampling:", X_train.shape, y_train.shape)
 print("After Oversampling:", X_train_smote.shape, y_train_smote.shape)
 print("Test Set:", X_test.shape, y_test.shape)
 
-# Before oversampling
-print("Before Oversampling (y_train):")
-print(y_train.value_counts())
-
-# After oversampling
-print("\nAfter Oversampling (y_train_smote):")
-print(pd.Series(y_train_smote).value_counts())
-
-# Test set
-print("\nTest Set (y_test):")
-print(y_test.value_counts())
 
 """# Prediction using XGBoost
 
