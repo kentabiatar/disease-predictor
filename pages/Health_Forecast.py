@@ -6,10 +6,8 @@ import pandas as pd
 import joblib
 from streamlit_echarts import st_echarts
 
-# load_dotenv()
-# API_KEY = os.getenv("API_KEY")
-
-API_KEY = "f04ab63da2ab48889bb42204252604"
+load_dotenv()
+API_KEY = os.getenv("API_KEY")
 
 indonesia_cities = [
     "Jakarta", "Surabaya", "Bandung", "Medan", "Semarang", "Palembang", "Makassar",
