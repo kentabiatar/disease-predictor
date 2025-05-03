@@ -48,7 +48,6 @@ weather_dis.head()
 
 ## Label Encoding
 """
-
 #Label encode
 X = weather_dis.drop('prognosis', axis=1)
 y = weather_dis['prognosis']
@@ -70,16 +69,14 @@ categories_df = pd.DataFrame({
     'encoded_label': list(range(len(y_encoder.classes_)))
 })
 
-# --- Combine X and encoded y into one final DataFrame for printing ---
 final_df = pd.concat([X_final, pd.Series(y_encoded, name='prognosis_encoded')],axis=1)
 
 print(final_df.head())
 print("\n===== Prognosis Label Mapping =====")
 print(categories_df)
 
-unique_prognosis = np.unique(y)
-print("Unique Prognosis:", unique_prognosis)
 
+#Data oversampling and train/test splitting
 X_train, X_test, y_train, y_test = train_test_split(X_final, final_df["prognosis_encoded"], test_size=0.3, random_state=42, stratify=y)
 
 smote = SMOTE(random_state=42)
