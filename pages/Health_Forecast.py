@@ -109,7 +109,7 @@ if st.button("Submit"):
     feature_cols = joblib.load("feature_columns.pkl")
     user_input_df = user_input_df.reindex(columns=feature_cols, fill_value=0)
 
-    st.success("✅ Form submitted. Here's the final input:")
+    st.success("✅ Form submitted.")
     probas = model.predict_proba(user_input_df)[0]
     top5_idx = probas.argsort()[-5:][::-1]
     top5_diseases = y_encoder.classes_[top5_idx]
@@ -155,6 +155,8 @@ if st.button("Submit"):
         )
         
     with right:
+        st.markdown("### 🧠 Prediction Result")
+        st.markdown("You most likely have one of the following conditions, based on your input:")
         for i in range(5):
             st.markdown(f"**Top {i+1} Prediction:** {top5_diseases[i]} — {top5_probs[i]*100:.2f}%")
 
