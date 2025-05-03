@@ -120,7 +120,9 @@ if st.button("Submit"):
     with left:
         options = {
             "tooltip": {"trigger": "item"},
-            "legend": {"top": "5%", "left": "center"},
+            "legend": {"top": "5%", "left": "center", "textStyle": {
+                                                        "color": "#fff"
+                                                    }},
             "series": [
                 {
                     "name": "result",
@@ -132,9 +134,9 @@ if st.button("Submit"):
                         "borderColor": "#fff",
                         "borderWidth": 2,
                     },
-                    "label": {"show": False, "position": "center"},
+                    "label": {"show": False, "position": "center", "color": "#FFF"},
                     "emphasis": {
-                        "label": {"show": True, "fontSize": "25", "fontWeight": "bold"}
+                        "label": {"show": True, "fontSize": "25", "fontWeight": "bold", "color": "#FFF"}
                     },
                     "labelLine": {"show": False},
                     "data": [
