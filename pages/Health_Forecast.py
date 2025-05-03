@@ -7,7 +7,7 @@ import joblib
 from streamlit_echarts import st_echarts
 
 load_dotenv()
-API_KEY = os.getenv("API_KEY")
+API_KEY = st.secrets["api"]["weather_key"]
 
 indonesia_cities = [
     "Jakarta", "Surabaya", "Bandung", "Medan", "Semarang", "Palembang", "Makassar",
