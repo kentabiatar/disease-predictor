@@ -49,7 +49,7 @@ with right:
     with st.expander("🔬 How It Works"):
         st.markdown("""
         Our `model uses the **XGBoost algorithm**, trained on real health incident data, local weather patterns, and gender demographics. It analyzes:
-        - Temperature, humidity, rainfall
+        - Temperature, humidity, wind speed
         - Gender-specific health patterns
         - Feature importance optimization via gradient boosting
 
